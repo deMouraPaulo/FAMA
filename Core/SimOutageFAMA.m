@@ -1,27 +1,39 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % function [pout] = SimOutageNakagami(Nsamples,gamma, Sigma, U, m) 
 %
-% Simulates the outage probability achieved by FAMA under NAKAGAMI-m fading
-% with correlation matrix Sigma. If U == 1, then a single
-% user case is simulated where gamma represents the SNR threshold instead 
-% of the SIR threshold. 
+% Simulates the outage probability achieved by FAMA under Nakagami-m fading
+% with correlation matrix Sigma. 
+% 
+% If U == 1 and gamma_avg ~= Inf, then it is a single user case and OP based 
+% on SNR is simulated. Inteference is ignored.
+%
+% If U > 1 and gamma_avg == Inf, then noise is ignored and the OP based
+% on SIR is simulated.
+%
+% If U > 1 and gamma_avg ~= Inf, then noise and interference are considered
+% and OP based on SINR is simulated.
+%
 % Channel's complex Gaussian RVs are modeled acording with FAS "exact model" 
 % presented in Khammassi's article [Eq. 10, 1], but with unitary variance of
 % the i.i.d.normal RVs al and bl.
-% Nakagami-m RVs is the sum of "m" complex Gaussian RVs
+%
+% Nakagami-m RVs are obtained from Gaussian RVs.
+%
+% For fast FAMA, it was used the inverse Nakagami-m CDF approximation [2].
+%
+% References:
 % [1] M. Khammassi, A. Kammoun, and M.-S. Alouini, "A new analytical 
 % approximation of the fluid antenna system channel,” IEEE Trans. 
 % Wireless Commun., vol. 22, no. 12, pp. 8843–8858, Dec. 2023.
 %
-% For fast FAMA, it was used the inverse Nakagami-m CDF approximation [2].
 % [2] N. C. Beaulieu and C. Cheng, "Efficient Nakagami-m Fading Channel Simulation,"
 % IEEE Trans. Veh. Techn., vol. 54, no. 2, pp. 413–424, Mar. 2005.
 %  
 % 
-% Parameters:
+% -------------------- Parameters: ---------------------------------
 %
 % - Nsamples: number of Monte-Carlo simulations
-% - gamma: SIR threshold (can be a vector) or SNR threshold if U == 1
+% - gamma: SIR, SINR or SNR thresholds in linear scale (can be a vector).
 % - gamma_avg: scalar, average received SNR (used for OP based on SNR and SINR)
 % - U: number of users (scalar)
 % - Sigma: correlation matrix of size NxN, where N is the number of ports.

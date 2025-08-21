@@ -2,14 +2,26 @@
 % function [pout] = SimOutage_BlocksNakagami(Nsamples,gamma, U, mu, L, m)
 %
 % Simulates the outage probability achieved by FAMA under Nakagami-m fading
-% with block-diagonal correlation matrix as in Eq. (18). Parameters:
+% with block-diagonal correlation matrix as in Eq. (18). 
+%
+% If U == 1 and gamma_avg ~= Inf, then it is a single user case and OP based 
+% on SNR is simulated. Inteference is ignored.
+%
+% If U > 1 and gamma_avg == Inf, then noise is ignored and the OP based
+% on SIR is simulated.
+%
+% If U > 1 and gamma_avg ~= Inf, then noise and interference are considered
+% and OP based on SINR is simulated.
+% 
+% 
+%  ------------------ Parameters: ----------------------------------------
 %
 % - Nsamples: number of Monte-Carlo simulations
 % - gamma: SIR threshold (can be a vector)
 % - gamma_avg: scalar, average received SNR (used for OP based on SNR and SINR)
 % - U: number of users (scalar)
-% - mu: correlation factor (scalar) within each block (See Section III-B).
-% - L: vector containing the size of each block (See Section III-B)
+% - mu: correlation factor (scalar) within each block.
+% - L: vector containing the size of each block.
 % - m: Nakagami-m fading severity
 % - famatype: string that specifies the type of FAMA
 %             If famatype == 'Fast', fast-FAMA
