@@ -15,4 +15,3 @@ end
 % [Ref. 1] K. -K. Wong, K. F. Tong, Y. Chen, and Y. Zhang, "Closed-form
 % expressions for spatial correlation parameters for performance
 % analysis of fluid antenna systems,” Electron. Lett., vol. 58, no.11, pp. 454–457, May 2022.
-
