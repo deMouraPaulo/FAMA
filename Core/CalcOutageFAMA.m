@@ -2,11 +2,9 @@
 % function [pout] = CalcOutageFAMA(gamma_v, L, rho, U, method, order,... 
 %     m, famatype, d0, d, alphaCF, Nant)
 %
-% This code serves as a supplementary tool for the article entitled "Fast,
-% Slow and Opportunistic FAMA under Nakagami-m Fading Channels and Its
-% Applications to Cell-Free Networks", with particular emphasis on the
-% theoretical analysis of Outage Probability (OP) as delineated in Eqs.
-% (10), (11), (14), (15), (37), (38), (39) and (40), among others.
+% This code serves as a supplementary tool  for theoretical analysis of
+% "Fast, Slow and Opportunistic FAMA under Nakagami-m Fading Channels and
+% Its Applications to Cell-Free Networks".
 %
 % Calculates theoretical OP for FAMA under Nakagami-m fading channels in
 % different configurations:
@@ -32,46 +30,42 @@
 %
 % If the number of users is set to 1 (U == 1), then a single user 
 % fluid antenna system is considered, and the OP based on SNR is computed. 
-% (for example, according to Eq. (16) or (39)).
 %
 % If opbasedSINR == 'SINR' (and U ~= 1), OP based on SINR is computed, 
-% (as in Eqs. (15) or (40)).
 % In this case, the average received SNR (gamma_avg) must be given, 
 % as noise is cosidered, additionaly to interference. 
 %
-% If "opbasedSINR" ~= 'SINR' (and U ~= 1), OP base on SIR is computed (as
-% in Eqs. (10), (11), (14), (37) and (38)).
+% If "opbasedSINR" ~= 'SINR' (and U ~= 1), OP base on SIR is computed.
 % 
 % General parameters:
-% - gamma_v: vector containing the SIR, SINR or SNR thresholds in linear scale. 
-% - gamma_avg: scalar, average received SNR (used for OP based on SNR and SINR)
-% - L: vector containing the block sizes of the correlation approximation      
-% - rho: power correlation coefficient used in the block-diagonal 
-%        approximation (suitable range: 0.95 to 0.99)
-% - U: number of users (scalar).
-% - method: string that specifies the theoretical expression used to
-%           compute the OP. 
+% - gamma_v: vector containing the SIR, SINR or SNR thresholds in linear scale; 
+% - gamma_avg: scalar, average received SNR (used for OP based on SNR and SINR);
+% - L: vector containing the block sizes of the correlation approximation;      
+% - rho: power correlation coefficient used in the block-diagonal, 
+%        approximation (suitable range: 0.95 to 0.99);
+% - U: number of users (scalar);
+% - method: string that specifies the theoretical expression used to compute the OP 
 %      If method == 'Integral', then the double or triple integral expressions 
-%           are used for direct numerical integration.
+%           are used for direct numerical integration;
 %      If method == 'Quadrature', the integrals are solved by Gauss-Laguerre
-%           quadrature.
+%           quadrature;
 % - order: order of the quadrature approximation 
-%          (only if method == 'Quadrature' )
+%          (only if method == 'Quadrature' );
 % - orderSINR : order of the 1st quadrature approximation 
-%           (only if method == 'Quadrature' AND opbasedSINR == 'SINR')
-% - m: Nakagami-m fading severity (integer)
+%           (only if method == 'Quadrature' AND opbasedSINR == 'SINR');
+% - m: Nakagami-m fading severity (integer);
 %
 %  Parameters for free-cell FAMA with MRT precoding:
-%       d0 - distance from BS to the target user;
-%       d - distance from interefence BS to the target user 
-%               (d is the same for all interference BS);
+%       d0 - distance from serving BS to the target user;
+%       d - distance from interfering BSs to the target use, 
+%               (d is the same for all interfering BS);
 %       alphaCF - path loss exponent;
 %       Nant - number of antennas in a given BS.
 %
 %------------------- Output -------------------------------------
 %
 % - pout: vector containing the OP (same size as gamma_v), i.e., 
-%         pout(k) = P(SIR < gamma_v(k))
+%         pout(k) = P(SIR < gamma_v(k)).
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -82,7 +76,7 @@ function [pout] = CalcOutageFAMA(gamma_v, L, rho, U, method, order, m, famatype,
 % ---------------------------------------------------------------------
 if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFfast') || strcmp(famatype, 'CFslow')
 
-    %--------------- Single user case -> Evaluation of Eq. (16) ----------
+    %--------------- Single user case ------------------------------------
     %---------------------------------------------------------------------
     if (U == 1 )  % FAS OP 
         % Pre-allocating
@@ -96,10 +90,10 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
         % loop over blocks
         for kb = 1:length(L) 
 
-            fun = @(rb) rb^(m-1)*exp(-rb/2).*...
+            fun = @(rb) rb.^(m-1) .* exp(-rb/2).*...
                 (1-marcumq(sqrt(rho*rb./(1-rho)),sqrt( (2*m*gamma_ratio)./(1-rho) ), m)).^L(kb);
 
-            pout = pout.* ( 1/(2^m * gamma(m)) * integral(fun, 0, inf, 'ArrayValued',true));
+            pout = pout.* (1/(2^m * gamma(m)) * integral(fun, 0, inf, 'ArrayValued',true));
 
         end
         
@@ -129,7 +123,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
         % --------------------------------------------------------------
         if ~strcmp(opbasedSINR, 'SINR')
 
-            %---------------- Direct integration method (Eq. (10)) -------------
+            %---------------- Direct integration method  -------------
             if strcmp(method, 'Integral')
                 % Pre-allocating
                 pout = ones(1,length(gamma_v));
@@ -153,7 +147,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
                 end  % END loop over SIR thresholds (gamma_v) 
                 % END method, 'Integral'
 
-            %---------------- Quadrature approximation (Eq. (11)) -------------
+            %---------------- Quadrature approximation  -----------------
             elseif strcmp(method, 'Quadrature')
 
                 % The function "Gauss-Laguerre" is used to avoid complex roots
@@ -199,7 +193,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
             end
 
 
-            %----------- Direct integration method (Eq. (15)) -------
+            %----------- Direct integration method  -------------------
             if strcmp(method, 'Integral')
 
                 % 1st integration uses Matlab function "integral"
@@ -333,7 +327,7 @@ else
 end
 
     %---------------------------------------------------------------------
-    % Auxiliary function to compute G as in Eq. (14)
+    % Auxiliary function to compute G 
     %---------------------------------------------------------------------
     function [G] = Gfun(r_b, rtil_b, gam, Util, rho, m)
 
@@ -399,8 +393,6 @@ end
         w       = gamma(alpha+1) .* V(:,1).^2;
         
     end
-
-
 
 end
 
