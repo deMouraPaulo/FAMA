@@ -2,7 +2,7 @@
 % 
 % This code DON'T compute data base, ONLY plots curves for Figure 4.3
 % Follow the steps:
-% 1) Run the code Fig4_1.m to generate data; 
+% 1) Run the code Fig4_3.m to generate data; 
 % 2) Run this code.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
