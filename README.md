@@ -5,7 +5,7 @@
 
 The codes calculate and simulate theoretical OP for FAMA under Nakagami-m fading channels in
  different configurations:
- - systems: slow FAMA, fast FAMA, opportunistic FAMA, cell-free with MRT precoding at base station and users with fluid antenna systems (FASs);
+ - systems: slow FAMA, fast FAMA, opportunistic FAMA, cell-free with MRT precoding at base station and users with fluid antennas;
  - correlation: constant correlation, spatial-block correlation;
  - categories of interference: interference-limited, noise-limited 
  (no interference), combined interference and noise;
