@@ -336,7 +336,7 @@ end
         % To avoid overflow or loss of accuray, the modified Bessel
         % function of the first kind, besseli(nu,Z,scale), was scaled by
         % the factor exp(-abs(real(Z))), with scale = 1. 
-        % Therefore, the exponential term of Eq. (14) was multiplied by exp(+Z).
+        % Therefore, the exponential term was multiplied by exp(+Z).
         %
         % gammaln(A) = log(gamma(A)) 
         % The gammaln command avoids the underflow and overflow that 

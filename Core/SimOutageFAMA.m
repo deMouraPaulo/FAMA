@@ -107,7 +107,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
             end
         % Multi-user
         else
-            % Generate channels from desired user (X) and interference (Y)
+            % Generate channels for desired user (X) and interference (Y)
             if strcmp(famatype, 'Slow')
                 [Y, X] = GenVariables(batchsize, m*(U-1), V, lambda, m);
                 Y = Y + ((2*m)/(gamma_avg));
@@ -122,7 +122,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
                 Y =  (d0/d)^alphaCF .* Y + ((2*m*Nant)/(gamma_avg));
             end
            
-            % Computes the SIR according to Eq. (24)
+            % Computes the SIR
             sir = max(X./Y,[], 1);
         end
         % Computes outage probability

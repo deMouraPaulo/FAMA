@@ -72,7 +72,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
             end
         % Multiuser case
         else
-            % Generate variables X and Y according to Eq. (26)
+            % Generate variables X and Y
             if strcmp(famatype, 'Slow')
                 [Y, X] = GenVariables(batchsize, m*(U-1), mu, L, m);
                 Y = Y + (2*m)/((1-mu^2)*gamma_avg);
@@ -87,7 +87,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
                 Y =  (m*(U-2)+1)*(d0/d)^alphaCF .* Y + (2*m*Nant)/((1-mu^2)*gamma_avg);
             end
 
-            % Computes the SIR according to Eq. (26)
+            % Computes the SIR
             sir = max(X./Y,[], 1);
         end
 
