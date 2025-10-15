@@ -2,7 +2,7 @@
 % function [pout] = SimOutage_BlocksNakagami(Nsamples,gamma, U, mu, L, m)
 %
 % Simulates the outage probability achieved by FAMA under Nakagami-m fading
-% with block-diagonal correlation matrix as in Eq. (18). 
+% with block-diagonal correlation matrix. 
 %
 % If U == 1 and gamma_avg ~= Inf, then it is a single user case and OP based 
 % on SNR is simulated. Inteference is ignored.
@@ -16,27 +16,31 @@
 % 
 %  ------------------ Parameters: ----------------------------------------
 %
-% - Nsamples: number of Monte-Carlo simulations
-% - gamma: SIR threshold (can be a vector)
-% - gamma_avg: scalar, average received SNR (used for OP based on SNR and SINR)
-% - U: number of users (scalar)
-% - mu: correlation factor (scalar) within each block.
-% - L: vector containing the size of each block.
-% - m: Nakagami-m fading severity
+% - Nsamples: number of Monte-Carlo simulations;
+% - gamma: SIR threshold (can be a vector);
+% - gamma_avg: scalar, average received SNR (used for OP based on SNR and SINR);
+% - U: number of users (scalar);
+% - mu: correlation factor (scalar) within each block
+%       obs.: mu = sqrt(delta), where delta is the power correlation coefient;
+% - L: vector containing the size of each block;
+% - m: Nakagami-m fading severity;
 % - famatype: string that specifies the type of FAMA
-%             If famatype == 'Fast', fast-FAMA
-%             If famatype == 'Slow', slow-FAMA
-%             If famatype == 'CFfast', cell-free fast-FAMA
-%             If famatype == 'CFslow', cell-free slow-FAMA
+%             If famatype == 'Fast', fast-FAMA;
+%             If famatype == 'Slow', slow-FAMA;
+%             If famatype == 'CFfast', cell-free fast-FAMA;
+%             If famatype == 'CFslow', cell-free slow-FAMA;
 %
-%  - for free-cell MRT
-%           d0 - ditance to target user
-%           d - distance to interefence BS (all the same)
-%           alphaCF - path loss exponent
-%           Nant - number of antennas in the BS
+%  - for free-cell FAMA with MRT precoding:
+%       d0 - distance from serving BS to the target user;
+%       d - distance from interfering BSs to the target use; 
+%               (d is the same for all interfering BS);
+%           alphaCF - path loss exponent;
+%           Nant - number of antennas in the BS.
 %
-% - pout: output vector (same size as gamma) with the outage probabilities.
-%         pout(k) = P(SIR < gamma(k)) according to Eq. (26)
+% - pout: output vector (same size as gamma) with the outage probabilities
+%         pout(k) = P(sir < gamma(k)),
+%         where "sir" can represent SIR, SNR or SINR, as described above.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [pout] = SimOutage_BlocksFAMA(Nsamples,gamma, U, mu, L, m, famatype, gamma_avg, d0, d, alphaCF, Nant)
@@ -59,10 +63,11 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
 
         % Single user
         if singleUser
-            X = GenVariables_SingleUser(batchsize, mu, L, m);
             if strcmp(famatype, 'Slow') || strcmp(famatype, 'Fast')
+                X = GenVariables_SingleUser(batchsize, mu, L, m);
                 sir = max( X ./ ((2*m)/((1-mu^2)*gamma_avg)),[],1);
             elseif strcmp(famatype, 'CFslow') || strcmp(famatype, 'CFfast')
+                X = GenVariables_SingleUser(batchsize, mu, L, m*Nant);
                 sir = max( X ./ ((2*m*Nant)/((1-mu^2)*gamma_avg)) ,[],1);
             end
         % Multiuser case

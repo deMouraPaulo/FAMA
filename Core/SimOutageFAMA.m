@@ -14,7 +14,7 @@
 % and OP based on SINR is simulated.
 %
 % Channel's complex Gaussian RVs are modeled acording with FAS "exact model" 
-% presented in Khammassi's article [Eq. 10, 1], but with unitary variance of
+% presented in Khammassi's article [Eq. (10), 1], but with unitary variance of
 % the i.i.d.normal RVs al and bl.
 %
 % Nakagami-m RVs are obtained from Gaussian RVs.
@@ -47,14 +47,16 @@
 %             If famatype == 'CFfast', cell-free fast-FAMA
 %             If famatype == 'CFslow', cell-free slow-FAMA
 %
-%  - for free-cell MRT
-%           d0 - ditance to target user
-%           d - distance to interefence BS (all the same)
+%  - for free-cell FAMA with MRT precoding:
+%       d0 - distance from serving BS to the target user
+%       d - distance from interfering BSs to the target use
+%               (d is the same for all interfering BS)
 %           alphaCF - path loss exponent
 %           Nant - number of antennas in the BS
 %
-% - pout: output vector (same size as gamma) with the outage probabilities.
-%         pout(k) = P(SIR < gamma(k))
+% - pout: output vector (same size as gamma) with the outage probabilities
+%         pout(k) = P(sir < gamma(k)),
+%         where "sir" can represent SIR, SNR or SINR, as described above.
 %  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -71,9 +73,8 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
     pout = zeros(size(gamma));
 
     % For the sake of efficiency, only a few dominant eigenvectors and
-    % eigenvalues can be computed, specially useful as N becomes large. If
-    % desired, the full eigendecomposition can be computed always as
-    % eig(Sigma).
+    % eigenvalues can be computed, specially useful as N becomes large. 
+    % If desired, the full eigendecomposition can be computed always as eig(Sigma).
     if numel(Sigma) > 1e5
         [V,Lambda] = eigs(Sigma,100);
     else
