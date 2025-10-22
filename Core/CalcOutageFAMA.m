@@ -101,27 +101,31 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
     %--------------- Multi user case -------------------------------------
     %---------------------------------------------------------------------
     else
-        if strcmp(famatype, 'Slow')
-            Util = m * (U-1);   
-
-        elseif strcmp (famatype, 'CFslow')
-            Util = m * (U-1);
-            gamma_v = gamma_v .* (( d0 / d ).^alphaCF);
-            m = m * Nant;
-
-        elseif strcmp(famatype, 'Fast')
-            Util = 1;  % approximation for OP-SIR
-            gamma_v = gamma_v .* ( m * (U - 2) + 1);
-
-        elseif  strcmp(famatype, 'CFfast')
-            Util = 1;  % approximation for OP-SIR
-            gamma_v =  gamma_v .* ((m*(U-2) + 1) * ( d0 / d ).^alphaCF );
-            m = m * Nant;
-        end
-
+        
         % ----------------- SIR based OP - 2 integrals -----------------
         % --------------------------------------------------------------
         if ~strcmp(opbasedSINR, 'SINR')
+
+            % Set parameters for different systems
+
+            if strcmp(famatype, 'Slow')
+                Util = m * (U-1);
+
+            elseif strcmp (famatype, 'CFslow')
+                Util = m * (U-1);
+                gamma_v = gamma_v .* (( d0 / d ).^alphaCF);
+                m = m * Nant;
+
+            elseif strcmp(famatype, 'Fast')
+                Util = 1;  % approximation for OP-SIR
+                gamma_v = gamma_v .* ( m * (U - 2) + 1);
+
+            elseif  strcmp(famatype, 'CFfast')
+                Util = 1;  % approximation for OP-SIR
+                gamma_v =  gamma_v .* ((m*(U-2) + 1) * ( d0 / d ).^alphaCF );
+                m = m * Nant;
+            end
+
 
             %---------------- Direct integration method  -------------
             if strcmp(method, 'Integral')
@@ -176,20 +180,29 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
         %-------------------------------------------------------------
         elseif strcmp(opbasedSINR, 'SINR')
 
-            % calculates: SINR / SINR average
-            if strcmp(famatype, 'Slow')
-                gamma_ratio = gamma_v ./ gamma_avg;
-            elseif strcmp (famatype, 'CFslow')
-                gamma_ratio = gamma_v ./ (gamma_avg .* (( d0 / d ).^alphaCF));
-            elseif strcmp(famatype, 'Fast')
-                gamma_ratio = gamma_v ./ (gamma_avg * ( m * (U - 2) + 1));
-            elseif strcmp(famatype, 'CFfast')
-                gamma_ratio = gamma_v ./ (gamma_avg * ( m * (U - 2) + 1) * ( d0 / d ).^alphaCF );
-            end
 
-            % Util = mtil for f-FAMA
-            if strcmp(famatype, 'Fast') ||  strcmp(famatype, 'CFfast')
+            % gamma_ratio is the same for all systems
+            gamma_ratio = gamma_v ./ gamma_avg;
+            
+
+            % Set parameters for different systems
+
+            if strcmp(famatype, 'Slow')
+                Util = m * (U-1);
+
+            elseif strcmp (famatype, 'CFslow')
+                Util = m * (U-1);
+                gamma_v = gamma_v .* (( d0 / d ).^alphaCF);
+                m = m * Nant;
+
+            elseif strcmp(famatype, 'Fast')
                 Util = (m * (U-1)) / (m * (U-2) + 1);
+                gamma_v = gamma_v .* ( m * (U - 2) + 1);
+
+            elseif  strcmp(famatype, 'CFfast')
+                Util = (m * (U-1)) / (m * (U-2) + 1);
+                gamma_v =  gamma_v .* ((m*(U-2) + 1) * ( d0 / d ).^alphaCF );
+                m = m * Nant;
             end
 
 
