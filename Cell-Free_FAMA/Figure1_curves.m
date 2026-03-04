@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % 
+% 
 % This code DON'T compute data base, ONLY plots curves of a figure
 % Follow the steps:
 % 1) Run the code Figure1.m to generate data; 
