@@ -1,14 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Computes and plots the OP vs SIR threshold for a 1D fluid
-% antenna in a cell-free FAMA system, with MRT precoding. 
+% % 
+% This code DON'T compute data base, ONLY plots curves of a figure
+% Follow the steps:
+% 1) Run the code Figure1.m to generate data; 
+% 2) Run this code.
 %
-% Similar to Fig. 2 of [1], but with parameters: 
-% d1=d2=d3=500, d0=200;
-% antBS = [2, 8]; N = 10; W = 1, U = 3, m = 2
-%
-% [1] T. Han, Y. Zhu, K.-K. Wong, G. Zheng, and H. Shin, 
-% "Cell-free Fluid Antenna Multiple Access Networks," 
-% IEEE Trans. Wireless Commun., pp. 1–1, Apr. 2025,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %-------------------------------------------------------------------------
