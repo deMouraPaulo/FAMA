@@ -109,17 +109,20 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
         else
             % Generate channels for desired user (X) and interference (Y)
             if strcmp(famatype, 'Slow')
-                [Y, X] = GenVariables(batchsize, m*(U-1), V, lambda, m);
+                [Y, X] = GenVariables(batchsize, U, V, lambda, m);
                 Y = Y + ((2*m)/(gamma_avg));
             elseif strcmp(famatype, 'Fast')
-                [Y, X] = GenVariablesFast(batchsize, U, V, lambda, m);
-                Y = Y + ((2*m)/(gamma_avg));
+                % for sigma^2 = sigma_s^2 = 1, sqrt of noise power is
+                sigma_eta = sqrt( (2 * m) /  gamma_avg );             
+                [Y, X] = GenVariablesFast(batchsize, U, V, lambda, m, 1, 0, sigma_eta);
             elseif strcmp(famatype, 'CFslow')
-                [Y, X] = GenVariables(batchsize, m*(U-1), V, lambda, m*Nant);
+                [Y, X] = GenVariables(batchsize, U, V, lambda, m*Nant);
                 Y =  (d0/d)^alphaCF .* Y + ((2*m*Nant)/(gamma_avg));
             elseif strcmp(famatypeFast, 'CFfast')
-                [Y, X] = GenVariablesFast(batchsize, U, V, lambda, m*Nant);
-                Y =  (d0/d)^alphaCF .* Y + ((2*m*Nant)/(gamma_avg));
+                % for sigma^2 = sigma_s^2 = 1, sqrt of noise power is
+                sigma_eta = sqrt( (2 * m*Nant) / (d0^alphaCF * gamma_avg) );
+                [Y, X] = GenVariablesFast(batchsize, U, V, lambda, m*Nant, d, alphaCF,sigma_eta);
+                Y =  d0^alphaCF .* Y;
             end
            
             % Computes the SIR
@@ -142,7 +145,7 @@ end
 %   is NAKAGAMI-m distributed with correlation matrix given by
 %   Sigma = V'*diag(lambda)*V
 %---------------------------------------------------------------------
-    function [Y, X] = GenVariables(Nsamples, Util, V, lambda, m)
+    function [Y, X] = GenVariables(Nsamples, U, V, lambda, m)
 
         N = size(V,1);
         %         disp ('size eigenvectors:')
@@ -177,7 +180,7 @@ end
 
             % Correlated samples of channel from/to interferers
             % and Nakagami-m RV
-            for u = 1:(Util)
+            for u = 1:(m*(U-1))
                 aux = abs(L*(randn(Ngen, length(junk_index)) + ...
                     1i*randn(Ngen, length(junk_index)))/sqrt(2)).^2;
                 Y(:,junk_index) = aux + Y(:,junk_index);
@@ -196,28 +199,21 @@ end
 %   FAST FAMA
 %---------------------------------------------------------------------
 
-    function [Y, X] = GenVariablesFast(Nsamples, U, V, lambda, m)
+    function [Y, X] = GenVariablesFast(Nsamples, U, V, lambda, m, d, alphaCF,sigma_eta)
 
         N = size(V,1);
-        %         disp ('size eigenvectors:')
-        %         disp (N)
-
+     
         % Pre-allocating
         % Squared Nakagami-m RVs
         X = zeros(N, Nsamples);
         Y = zeros(N, Nsamples);
-        % soma_aux = zeros(N, Nsamples);
 
         % Square-root of correlation matrix
         L = V*diag(sqrt(lambda));
-        %         disp('size sqrt(correl matrix)')
-        %         disp(size(L))
-
+        
         % Number of independent Gaussians (rank of Sigma)
         Ngen = length(lambda);
-        %         disp('length(lambda)')
-        %         disp(Ngen)
-
+        
         % Loop to avoid RAM issues
         junk_size = 1e3;
         for ks = 1:ceil(Nsamples/junk_size)
@@ -231,6 +227,8 @@ end
             end
             % Correlated samples of channel from interference users
             for u = 1:((U-1))
+                % for z complex Gaussin RVs, with zero mean and variance = 1,
+                % gaux is the matrix product L * z
                 gaux = L*( randn(Ngen, length(junk_index)) + 1i*randn(Ngen, length(junk_index)) )/sqrt(2);
                 if m ~= 1
                     if m == 2
@@ -250,10 +248,15 @@ end
                      elseif m == 10
                         a1 = 1.1088; a2 = -1.6095; a3 = 0.6015; b1 = -1.6046; b2 = 0.6488;                       
                     end
-                    uniform = ( 1 - exp (- (abs(gaux).^2)./2) );
-                    auxVar = (log(1./(1-uniform))).^(1/(2*m));
+                    % second moment of the Rayleigh RV = 1, then the CDF 
+                    % of Rayleigh is uniform
+                    uniform = ( 1 - exp (- (abs(gaux).^2)./1) );
+                    % ancillary variable eta   
+                    auxVar = sqrt( log(1./(1-uniform)) ).^(1/m);
                     nkgNormalized = auxVar + ((a1.*auxVar + a2.*(auxVar.^2) + a3.*(auxVar.^3))./(1 + b1.*auxVar + b2.*(auxVar.^2)));
-                    nkg = sqrt(2) * nkgNormalized ;
+                    % second moment of the Rayleigh RV = 1, then the
+                    % denormalized Nakagami-m RV is
+                    nkg = nkgNormalized;
                     nkgComplex = nkg .* exp(1i.*angle(gaux));
                 end
                 if m == 1
@@ -261,7 +264,16 @@ end
                 end
                 Y(:,junk_index) = nkgComplex + Y(:,junk_index);
             end
-
+             % multiply distance 
+            if alphaCF ~= 0
+                Y(:,junk_index) = d^(-alphaCF/2) * Y(:,junk_index);
+            end
+             % add noise 
+            if sigma_eta ~= 0
+               Y(:,junk_index) = Y(:,junk_index) + (sigma_eta/sqrt(2))...
+                  *(randn(N, junk_size) + 1i*randn(N, junk_size));
+            end
+            % absolute value squared
             Y(:,junk_index) = abs(Y(:,junk_index)).^2;
 
         end
