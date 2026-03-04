@@ -98,7 +98,7 @@ if strcmp(famatype, 'Fast') || strcmp(famatype, 'Slow') || strcmp(famatype, 'CFf
                 if flagmf % mf = 1, approximated method
                     [Y, X] = GenVariables(batchsize, 1, mu, L, mK);
                     if gamma_avg == Inf  % sir-based op
-                        Y = ( (m*(U-1)- m + 1) * (d/d0)^alphaCF  ) .*  Y ;
+                        Y = ( (m*(U-1)- m + 1) * (d0/d)^alphaCF  ) .*  Y ;
                     else % sinr-based op
                         beta = (2 * mK  / gamma_avg) * ( ( d / d0 )^alphaCF );
                         msf = ( m * (U-1) + beta + beta^2/(4*m*(U-1)) ) /...
