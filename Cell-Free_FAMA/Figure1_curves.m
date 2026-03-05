@@ -5,6 +5,7 @@
 % 1) Run the code Figure1.m to generate data; 
 % 2) Run this code.
 %
+% Additionally, there is an analysis of the mean and variance.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %-------------------------------------------------------------------------
