@@ -19,12 +19,23 @@
 clc
 clear
 close all
-addpath('Core/')
+addpath(fullfile('..','Core'))
+
 
 
 %-------------------------------------------------------------------------
 % Parameters
 %-------------------------------------------------------------------------
+
+% flag, approx. mf = 1
+flagmf = true;
+
+% flag, 2nd integral
+flag2int = true;
+
+% flag, simulation, 
+flagsimul = true; % (mf = 1, approx. method, Gaussian RVs)
+
 
 famatype = 'Slow';     % Set FAMA type
 
@@ -76,15 +87,15 @@ for km = 1:length(m)
         % User feedback
         disp(['Iter "SNR": ' num2str(kg) ' out of ' num2str(length(avg_snr))]);
 
-        pout_calc_gl(km,kg) = CalcOutageFAMA(gam, N, dm, U, 'Quadrature', order, m(km),famatype, 'SINR', avg_snr(kg), orderSINR);
-        pout_calc_int(km,kg) = CalcOutageFAMA(gam, N, dm, U, 'Integral', order, m(km),famatype, 'SINR', avg_snr(kg), orderSINR);
+        pout_calc_gl(km,kg) = CalcOutageFAMA(gam, N, dm, U, 'Quadrature', order, m(km),famatype,flag2int,flagmf, avg_snr(kg), orderSINR);
+        pout_calc_int(km,kg) = CalcOutageFAMA(gam, N, dm, U, 'Integral', order, m(km),famatype,flag2int,flagmf, avg_snr(kg), orderSINR);
 
         % Monte Carlo simulation
         NsamplesAdjusted = max( round( 1000 * ( 1 / pout_calc_int(km,kg) ) ), Nsamples );
-        pout_sim(km,kg) = SimOutage_BlocksFAMA(NsamplesAdjusted,gam, U, sqrt(dm), N, m(km),famatype, avg_snr(kg));
+        pout_sim(km,kg) = SimOutage_BlocksFAMA(NsamplesAdjusted,gam, U, sqrt(dm), N, m(km),famatype,flagsimul, avg_snr(kg));
 
     end
-    pout_calc_sir(km,:) = CalcOutageFAMA(gam, N, dm, U, 'Quadrature', order, m(km),famatype, 'SIR', Inf, orderSINR);
+    pout_calc_sir(km,:) = CalcOutageFAMA(gam, N, dm, U, 'Quadrature', order, m(km),famatype,flag2int,flagmf, Inf, orderSINR);
 
 end
 
