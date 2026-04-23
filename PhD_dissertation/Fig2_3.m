@@ -5,7 +5,7 @@
 %
 % For FAS OP, it was set U = 1 (one user) in the function CalcOutageFAMA.m
 %
-% For MRC OP, it used Eq. (6.25) from [1].
+% For MRC OP, it was used Eq. (6.25) from [1].
 % [1] G. L. Stüber, Principles of Mobile Communication, 4th ed., 
 % Cham, Switzerland: Springer International Publishing, 2017.
 %  
