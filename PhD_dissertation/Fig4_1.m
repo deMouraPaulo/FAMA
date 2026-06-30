@@ -110,7 +110,7 @@ for kw = 1:length(W)
             L = BlockCorrelation(N(kn), rho, Num_eig, deltab);
 
             % Integral calculation
-            pout_calc_int_blocks(kn,kw,kfama) = CalcOutageFAMA(gam, L, deltab, U, 'Quadrature', order, m, famatype(kfama), flagcalc, flagmf, Inf,order3rd);
+            pout_calc_int_blocks(kn,kw,kfama) = CalcOutageFAMA(gam, L, deltab, U, 'Integral', order, m, famatype(kfama), flagcalc, flagmf, Inf,order3rd);
 
         end
 
