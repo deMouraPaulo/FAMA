@@ -1,6 +1,6 @@
  These codes serves as a supplementary tool for theoretical analysis of 
  - "Fast, Slow and Opportunistic Fluid Antenna Multiple Access (FAMA) under Nakagami-m fading channels and
-also to MRT-FAMA networks. Obs.: in some articles 'MRT-FAMA network' is called 'cell-free network'"., 
+also to MRT-FAMA networks. Obs.: in some articles 'MRT-FAMA network' is called 'cell-free network' ".
  
 
 The codes calculate and simulate theoretical OP for FAMA under Nakagami-m fading channels in
