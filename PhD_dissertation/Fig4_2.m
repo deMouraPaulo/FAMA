@@ -54,7 +54,7 @@ gam_sim = db2pow(gamdB_sim);        % SIR threshold (linear scale) for simulatio
 
 
 m = [1,2,3];                    % Nakagami-m fading severity
-order = 50;               % Order of GL quadrature
+order = 30;               % Order of GL quadrature
 
 
 
